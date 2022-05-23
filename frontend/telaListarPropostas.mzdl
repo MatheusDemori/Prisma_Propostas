@@ -13,7 +13,7 @@
         addFilterField("Filtrar", Filter, filterData)
         addButtonDefault("Nova Proposta",novaProposta)
     endBlock
-    addViewCollection(vcnProposta, Fields(COD_CLIENTE,TIPO_CLIENTE,EMPRESA,CONTATO,ENDERECO,BAIRRO,CIDADE,UF,CEP,E_MAIL,TEL,RESPONSAVEL,OBS,PEDIDO,TAB_PRECO,DESC_MAX,STATUS,OBS_INTERNA,COD_REPRESENTANTE,REPRESENTANTE,MOTIVO), Operations(remove,edit))
+    addViewCollection(vcnProposta, Fields(COD_CLIENTE,TIPO_CLIENTE,EMPRESA,CONTATO,RESPONSAVEL,PEDIDO,TAB_PRECO,STATUS,REPRESENTANTE,MOTIVO), Operations(remove,edit))
     trigger(init)
 
 
@@ -47,4 +47,4 @@
 
 
 [trigger:remove{obj}]
-    delete(proposta, init)
+    delete(proposta, obj.num_proposta, init)

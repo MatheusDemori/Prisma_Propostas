@@ -1,0 +1,106 @@
+[header:]
+    constant(___TITULO___,'Sistema de propsota de Peças e Serviços')
+    constant(___DESCRICAO___,'Sistema para proposta')
+    constant(___NOME___,'Sistema de Proposta')
+[dialog:]
+   addTitle('Sistema de Propostas - 1.0')
+
+
+
+[content:Contact]
+    trigger(getProposta)
+
+
+    addLabel("Número da Proposta",tbxNUM_PROPOSTA,0)
+    addField("Código do Cliente",tbxCOD_CLIENTE)
+	addField("Tipo de Cliente",tbxTIPO_CLIENTE)
+	addField("Nome da Empresa",tbxEMPRESA)
+	addField("Nome do Contato",tbxCONTATO)
+	addField("Endereço",tbxENDERECO)
+	addField("Bairro",tbxBAIRRO)
+	addField("Cidade",tbxCIDADE)
+	addField("UF",tbxUF)
+	addField("CEP",tbxCEP)
+	addFieldEmail("Email",tbxE_MAIL)
+	addFieldPhone("Telefone",tbxTEL)
+	addField("Nome do Responsável",tbxRESPONSAVEL)
+	addField("Observação",tbxOBS)
+	addField("Numero do Pedido",tbxPEDIDO)
+	addField("Tabela de Preço",tbxTAB_PRECO)
+	addField("Desconto Máximo",tbxDESC_MAX)
+	addField("Status",tbxSTATUS)
+	addField("Observação Interna",tbxOBS_INTERNA)
+	addField("Código do Representante",tbxCOD_REPRESENTANTE)
+	addField("Nome do Representante",tbxREPRESENTANTE)
+	addField("Motivo",tbxMOTIVO)
+    
+    
+    addButtonDefault("Save",save)
+    addButton("Back", back)
+
+
+
+[trigger:back]
+    goBack()
+
+
+
+[trigger:getProposta]
+    if existParam('id')
+    	getByKey(proposta, query.id, updateScreen)
+    endif
+
+
+
+[trigger:updateScreen{data}]
+    setTextLabelValue(tbxNUM_PROPOSTA,data.num_proposta)
+    setText(tbxCOD_CLIENTE,data.cod_cliente)
+	setText(tbxTIPO_CLIENTE,data.tipo_cliente)
+	setText(tbxEMPRESA,data.empresa)
+	setText(tbxCONTATO,data.contato)
+	setText(tbxENDERECO,data.endereco)
+	setText(tbxBAIRRO,data.bairro)
+	setText(tbxCIDADE,data.cidade)
+	setText(tbxUF,data.uf)
+	setText(tbxCEP,data.cep)
+	setTextEmail(tbxE_MAIL,data.e_mail)
+	setTextPhone(tbxTEL,data.tel)
+	setText(tbxRESPONSAVEL,data.responsavel)
+	setText(tbxOBS,data.obs)
+	setText(tbxPEDIDO,data.pedido)
+	setText(tbxTAB_PRECO,data.tab_preco)
+	setText(tbxDESC_MAX,data.desc_max)
+	setText(tbxSTATUS,data.status)
+	setText(tbxOBS_INTERNA,data.obs_interna)
+	setText(tbxCOD_REPRESENTANTE,data.cod_representante)
+	setText(tbxREPRESENTANTE,data.representante)
+	setText(tbxMOTIVO,data.motivo)
+
+[trigger:save]
+    obj <- json(
+    cod_cliente:getText(tbxCOD_CLIENTE),
+    tipo_cliente:getText(tbxTIPO_CLIENTE),
+    empresa:getText(tbxEMPRESA),
+    contato:getText(tbxCONTATO),
+	endereco:getText(tbxENDERECO),
+    bairro:getText(tbxBAIRRO),
+    cidade:getText(tbxCIDADE),
+    uf:getText(tbxUF),
+	cep:getText(tbxCEP),
+    e_mail:getText(tbxE_MAIL),
+    tel:getText(tbxTEL),
+    responsavel:getText(tbxRESPONSAVEL),
+	obs:getText(tbxOBS),
+    pedido:getText(tbxPEDIDO),
+    tab_preco:getText(tbxTAB_PRECO),
+    desc_max:getText(tbxDESC_MAX),
+	status:getText(tbxSTATUS),
+    obs_interna:getText(tbxOBS_INTERNA),
+    cod_representante:getText(tbxCOD_REPRESENTANTE),
+    representante:getText(tbxREPRESENTANTE),
+	motivo:getText(tbxMOTIVO))
+    if existParam('id')
+    	updateByKey(proposta, query.id, obj, back)
+    else
+    	insert(proposta, obj, back)
+    endif
