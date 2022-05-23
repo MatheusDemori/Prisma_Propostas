@@ -1,3 +1,6 @@
+[database:lixo]
+    createIdKey(id)
+
 [entity:PFPMZ_PROPOSTA]
     createIdKey(NUM_PROPOSTA)
     createText(COD_CLIENTE,5,true)

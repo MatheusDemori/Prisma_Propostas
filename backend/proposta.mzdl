@@ -1,24 +1,25 @@
-[disable:security]
+[DISABLE:Security]
+
 [get:/proposta]
     success(repository.PFPMZ_PROPOSTA.List())
 
 [get:/proposta/{NUM_PROPOSTA}]
-    proposta <- repository.PFPMZ_PROPOSTA.Get(NUM_PROPOSTA)
+    proposta <- repository.PFPMZ_PROPOSTA.GetByKey(NUM_PROPOSTA)
     assertNull(proposta,"Proposta não existe")
     success(proposta)
 
 [post:/proposta]
     checkBodyFields(COD_CLIENTE,TIPO_CLIENTE,EMPRESA,CONTATO,ENDERECO,BAIRRO,CIDADE,UF,CEP,E_MAIL,TEL,RESPONSAVEL,OBS,PEDIDO,TAB_PRECO,DESC_MAX,STATUS,OBS_INTERNA,COD_REPRESENTANTE,REPRESENTANTE,MOTIVO)
-    assertBodyFieldsNotEmpty([EMPRESA,CONTATO, E_MAIL,TEL], "campo %field% é obrigatório")
-    proposta <- repository.PFPMZ_PROPOSTA.Insert(data(body.COD_CLIENTE,body.TIPO_CLIENTE,body.EMPRESA,body.CONTATO,body.ENDERECO,body.BAIRRO,body.CIDADE,body.UF,body.CEP,body.E_MAIL,body.TEL,RESPONSAVEL,OBS,PEDIDO,TAB_PRECO,DESC_MAX,body.STATUS,body.OBS_INTERNA,body.COD_REPRESENTANTE,body.REPRESENTANTE,body.MOTIVO))
+    assertBodyFieldsNotEmptyEx([EMPRESA,CONTATO, E_MAIL,TEL], "campo %field% é obrigatório")
+    proposta <- repository.PFPMZ_PROPOSTA.Insert(data(body.COD_CLIENTE,body.TIPO_CLIENTE,body.EMPRESA,body.CONTATO,body.ENDERECO,body.BAIRRO,body.CIDADE,body.UF,body.CEP,body.E_MAIL,body.TEL,body.RESPONSAVEL,body.OBS,body.PEDIDO,body.TAB_PRECO,body.DESC_MAX,body.STATUS,body.OBS_INTERNA,body.COD_REPRESENTANTE,body.REPRESENTANTE,body.MOTIVO))
     success("proposta {proposta.NUM_PROPOSTA} Inserida com sucesso!")
 
 [put:/proposta/{NUM_PROPOSTA}]
     checkBodyFields(COD_CLIENTE,TIPO_CLIENTE,EMPRESA,CONTATO,ENDERECO,BAIRRO,CIDADE,UF,CEP,E_MAIL,TEL,RESPONSAVEL,OBS,PEDIDO,TAB_PRECO,DESC_MAX,STATUS,OBS_INTERNA,COD_REPRESENTANTE,REPRESENTANTE,MOTIVO)
-    assertBodyFieldsNotEmpty([EMPRESA,CONTATO, E_MAIL,TEL], "campo %field% é obrigatório")
-    resp <- repository.PFPMZ_PROPOSTA.Update(data(NUM_PROPOSTA,body.COD_CLIENTE,body.TIPO_CLIENTE,body.EMPRESA,body.CONTATO,body.ENDERECO,body.BAIRRO,body.CIDADE,body.UF,body.CEP,body.E_MAIL,body.TEL,RESPONSAVEL,OBS,PEDIDO,TAB_PRECO,DESC_MAX,body.STATUS,body.OBS_INTERNA,body.COD_REPRESENTANTE,body.REPRESENTANTE,body.MOTIVO))
+    assertBodyFieldsNotEmptyEx([EMPRESA,CONTATO, E_MAIL,TEL], "campo %field% é obrigatório")
+    resp <- repository.PFPMZ_PROPOSTA.Update(data(NUM_PROPOSTA,body.COD_CLIENTE,body.TIPO_CLIENTE,body.EMPRESA,body.CONTATO,body.ENDERECO,body.BAIRRO,body.CIDADE,body.UF,body.CEP,body.E_MAIL,body.TEL,body.RESPONSAVEL,body.OBS,body.PEDIDO,body.TAB_PRECO,body.DESC_MAX,body.STATUS,body.OBS_INTERNA,body.COD_REPRESENTANTE,body.REPRESENTANTE,body.MOTIVO))
     assert(resp==false,"Proposta não existe")
-    success("proposta {proposta.NUM_PROPOSTA} atualizada com sucesso!")
+    success("proposta {NUM_PROPOSTA} atualizada com sucesso!")
 
 [delete:/proposta/{NUM_PROPOSTA}]
     proposta <- repository.PFPMZ_PROPOSTA.Delete(NUM_PROPOSTA)
