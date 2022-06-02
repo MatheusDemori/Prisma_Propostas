@@ -1,0 +1,35 @@
+[DISABLE:Security]
+
+[get:/proposta/{NUM_PROPOSTA}/revisoes]
+    success(repository.PFPMZ_PROPOSTA_RV.ListByProposal(NUM_PROPOSTA))
+
+[get:/revisao/{ID}]
+    obj <- repository.PFPMZ_PROPOSTA_RV.GetByKey(ID)
+    assertNull(obj,"Revisão não existe")
+    success(obj)
+
+[post:/revisao]
+    checkBodyFields(NUM_PROPOSTA,RV_PROPOSTA,VALIDADE,PAGAMENTO,ICMS,FRETE,VALOR_FRETE,DATA_SOLICITACAO)
+    assertBodyFieldsNotEmptyEx([NUM_PROPOSTA,RV_PROPOSTA], "campo %field% é obrigatório")
+
+    proposta <- repository.PFPMZ_PROPOSTA.GetByKey(body.NUM_PROPOSTA)
+    assertNull(proposta, "Proposta {body.NUM_PROPOSTA} não encontrada!")
+
+    obj <- repository.PFPMZ_PROPOSTA_RV.Insert(data(body.NUM_PROPOSTA,body.RV_PROPOSTA,body.VALIDADE,body.PAGAMENTO,body.ICMS,body.FRETE,body.VALOR_FRETE,body.DATA_SOLICITACAO))
+    success("Revisão {obj.NUM_PROPOSTA}={obj.RV_PROPOSTA} Inserida com sucesso!")
+
+[put:/revisao/{ID}]
+    checkBodyFields(NUM_PROPOSTA,RV_PROPOSTA,VALIDADE,PAGAMENTO,ICMS,FRETE,VALOR_FRETE,DATA_SOLICITACAO)
+    assertBodyFieldsNotEmptyEx([NUM_PROPOSTA,RV_PROPOSTA], "campo %field% é obrigatório")
+
+    proposta <- repository.PFPMZ_PROPOSTA.GetByKey(body.NUM_PROPOSTA)
+    assertNull(proposta, "Proposta {body.NUM_PROPOSTA} não encontrada!")
+
+    resp <- repository.PFPMZ_PROPOSTA_RV.Update(data(ID,body.NUM_PROPOSTA,body.RV_PROPOSTA,body.VALIDADE,body.PAGAMENTO,body.ICMS,body.FRETE,body.VALOR_FRETE,body.DATA_SOLICITACAO))
+    assert(resp==false,"Revisão não existe")
+    success("Revisão {body.NUM_PROPOSTA}-{body.RV_PROPOSTA} atualizada com sucesso!")
+
+[delete:/revisao/{ID}]
+    obj <- repository.PFPMZ_PROPOSTA_RV.Delete(ID)
+    assertNull(obj,"Revisão não existe")
+    success(obj)

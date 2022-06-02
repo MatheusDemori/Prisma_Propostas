@@ -1,0 +1,52 @@
+<component.dialog>
+
+[content:Revisão]
+    trigger(getRevisao)
+
+    addLabel("Número da Proposta",tbxNUM_PROPOSTA,0)
+    addField("Revisao da Proposta",tbxRV_PROPOSTA)
+    addField("Validade",tbxVALIDADE)
+	addField("Pagamento",tbxPAGAMENTO)
+	addField("Icms",tbxICMS)
+	addField("Frete",tbxFRETE)
+	addField("Valor do Frete",tbxVALOR_FRETE)
+	addFieldDateTime("Data Solicitação",tbxDATA_SOLICITACAO)
+
+    addButtonDefault("Save",save)
+    addButton("Back", back)
+
+[trigger:back]
+    goBack()
+
+[trigger:getRevisao]
+    if existParam('id')
+    	getByKey(revisao, query.id, updateScreen)
+	else
+		setTextLabelValue(tbxNUM_PROPOSTA,query.num_proposta)
+    endif
+
+[trigger:updateScreen{data}]
+    setTextLabelValue(tbxNUM_PROPOSTA,data.num_proposta)
+	setText(tbxRV_PROPOSTA, data.rv_proposta)
+    setText(tbxVALIDADE,data.validade)
+    setText(tbxPAGAMENTO,data.pagamento)
+    setText(tbxICMS,data.icms)
+    setText(tbxFRETE,data.frete)
+    setText(tbxVALOR_FRETE,data.valor_frete)
+	setDateTimeValue(tbxDATA_SOLICITACAO,data.data_solicitacao)
+
+[trigger:save]
+    obj <- json(
+	    num_proposta:getTextLabelValue(tbxNUM_PROPOSTA),
+	    rv_proposta:getText(tbxRV_PROPOSTA),	
+        validade:getDateTimeValue(tbxVALIDADE),
+        pagamento:getText(tbxPAGAMENTO),
+        icms:getDateTimeValue(tbxICMS),
+        frete:getDateTimeValue(tbxFRETE),
+        valor_frete:getDateTimeValue(tbxVALOR_FRETE),
+        data_solicitacao:getDateTimeValue(tbxDATA_SOLICITACAO))
+    if existParam('id')
+    	updateByKey(revisao, query.id, obj, back)
+    else
+    	insert(revisao, obj, back)
+    endif

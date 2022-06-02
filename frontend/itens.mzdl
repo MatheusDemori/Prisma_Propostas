@@ -1,0 +1,34 @@
+<component.fullscreen>
+
+[content:Itens--da--Proposta]
+    startBlock HeaderTable
+        addFilterField("Filtrar", Filter, filterData)
+        addButtonDefault("Novo Item",novoItem)
+    endBlock
+    addViewCollection(vcnItem, Fields(NUM_PROPOSTA,RV_PROPOSTA,COD_ITEM,NCM,RV_ITEM,UNIDADE,QUANT,VALOR_UNIDADE,IPI,ICMS,ENTREGA), Operations(remove,edit))
+    trigger(init)
+
+[trigger:init]
+    if existParam('num_proposta') && existParam('rv_proposta')
+        getEx(item, params(query.num_proposta, query.rv_proposta), newData)
+    else
+        getAll(iten, newData)    
+    endif
+
+[trigger:newData{data}]
+    updateViewCollection(vcnItem,data)
+    filter <- getTextFromFilterField(Filter)
+    filterViewCollection(vcnItem, filter)
+
+[trigger:filterData]
+    filter <- getTextFromFilterField(Filter)
+    filterViewCollection(vcnItem, filter)
+
+[trigger:novoItem]
+    navigateToExt(item,navigateParams(num_proposta:query.num_proposta, rv_proposta:query.rv_proposta))
+
+[trigger:edit{obj}]
+    navigateToExt(item,navigateParams(id:obj.id))
+
+[trigger:remove{obj}]
+    delete(item, obj.id, init)

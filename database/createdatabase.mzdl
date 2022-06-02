@@ -1,8 +1,5 @@
-[database:lixo]
-    createIdKey(id)
-
 [entity:PFPMZ_PROPOSTA]
-    createIdKey(NUM_PROPOSTA)
+    createKey(NUM_PROPOSTA)
     createText(COD_CLIENTE,5,true)
     createText(TIPO_CLIENTE,1,false)
     createText(EMPRESA,55,false)
@@ -26,3 +23,58 @@
     createText(MOTIVO,10,false)
 
     createCRUD(queryFields(NUM_PROPOSTA),setFields(COD_CLIENTE,TIPO_CLIENTE,EMPRESA,CONTATO,ENDERECO,BAIRRO,CIDADE,UF,CEP,E_MAIL,TEL,RESPONSAVEL,OBS,PEDIDO,TAB_PRECO,DESC_MAX,STATUS,OBS_INTERNA,COD_REPRESENTANTE,REPRESENTANTE,MOTIVO))
+
+
+[entity:PFPMZ_HISTORICO]
+    createKey(ID)
+    createText(RV_PROPOSTA,2,false)
+    createText(MOTIVO,15,false)
+    createDateTime(DATA_CONTATO,false)
+    createDateTime(DATA_ENCERRAMENTO,false)
+    createLargeText(OBS)
+    createText(INDICE,50,false)
+    createRelation(PFPMZ_PROPOSTA, NUM_PROPOSTA)
+
+    createGet(GetByKey,queryFields(ID), resultFields(NUM_PROPOSTA, RV_PROPOSTA, MOTIVO, DATA_CONTATO, DATA_ENCERRAMENTO,OBS,INDICE))
+    createGet(GetByRevision,queryFields(NUM_PROPOSTA, RV_PROPOSTA), resultFields(RV_PROPOSTA, MOTIVO, DATA_CONTATO, DATA_ENCERRAMENTO, OBS, INDICE))
+    createQuery(ListAll,queryFields(), resultFields(ID,RV_PROPOSTA,MOTIVO,DATA_CONTATO,DATA_ENCERRAMENTO))
+    createQuery(ListByProposal,queryFields(NUM_PROPOSTA), resultFields(ID,RV_PROPOSTA,MOTIVO,DATA_CONTATO,DATA_ENCERRAMENTO))
+    createInsert(Insert,setFields(NUM_PROPOSTA, RV_PROPOSTA, MOTIVO, DATA_CONTATO, DATA_ENCERRAMENTO, OBS,INDICE))
+    createUpdateComplete(Update,queryFields(ID),setFields(NUM_PROPOSTA, RV_PROPOSTA, MOTIVO, DATA_CONTATO, DATA_ENCERRAMENTO, OBS,INDICE))
+    createDelete(Delete,queryFields(ID))
+
+[entity:PFPMZ_PROPOSTA_RV]
+    createKey(ID)
+    createText(RV_PROPOSTA,2,false)
+    createDateTimeNow(DATA_SOLICITACAO)
+    createInt(VALIDADE, false)
+    createText(PAGAMENTO,50,false)
+    createMonetary(ICMS,false)
+    createText(FRETE,10,false)
+    createMonetary(VALOR_FRETE, false)
+    createRelation(PFPMZ_PROPOSTA, NUM_PROPOSTA)
+
+    createCRUD(queryFields(ID),setFields(NUM_PROPOSTA,RV_PROPOSTA,VALIDADE,PAGAMENTO,ICMS,FRETE,VALOR_FRETE,DATA_SOLICITACAO))
+    createGet(GetByRevision,queryFields(NUM_PROPOSTA, RV_PROPOSTA), resultFields(NUM_PROPOSTA,RV_PROPOSTA,VALIDADE,PAGAMENTO,ICMS,FRETE,VALOR_FRETE,DATA_SOLICITACAO))
+    createQuery(ListByProposal, queryFields(NUM_PROPOSTA), resultFields(ID,NUM_PROPOSTA,RV_PROPOSTA,VALIDADE,PAGAMENTO,ICMS,FRETE,VALOR_FRETE,DATA_SOLICITACAO))
+
+[entity:PFPMZ_ITENS]
+    createKey(ID)
+    createText(COD_ITEM,16,false)
+    createLargeText(DESCRICAO)
+    createText(UNIDADE,2,false)
+    createReal(QUANT,false)
+    createMonetary(VALOR_UNIDADE,false)
+    createMonetary(IPI,false)
+    createMonetary(ICMS,false)
+    createText(ENTREGA,20,false)
+    createText(ARQUIVO,100,false)
+    createImage(FOTO)
+    createText(RV_ITEM,2,false)
+    createText(NCM,15,false)
+    createRelation(PFPMZ_PROPOSTA, NUM_PROPOSTA)
+    createText(RV_PROPOSTA,2,false)
+
+    createCRUD(queryFields(ID),setFields(NUM_PROPOSTA,RV_PROPOSTA,COD_ITEM,DESCRICAO,UNIDADE,QUANT,VALOR_UNIDADE,IPI,ICMS,ENTREGA,ARQUIVO,FOTO,RV_ITEM,NCM))
+    createQuery(ListByRevisao, queryFields(NUM_PROPOSTA,RV_PROPOSTA), resultFields(ID,NUM_PROPOSTA,RV_PROPOSTA,COD_ITEM,DESCRICAO,UNIDADE,QUANT,VALOR_UNIDADE,IPI,ICMS,ENTREGA,ARQUIVO,FOTO,RV_ITEM,NCM))
+

@@ -1,0 +1,69 @@
+<component.dialog>
+
+[content:Item--da--Proposta ]
+    trigger(getItem)
+
+    addLabel("Número da Proposta",tbxNUM_PROPOSTA,0)
+    addLabel("Revisao da Proposta",tbxRV_PROPOSTA,0)
+    addField("Código do Item",tbxCOD_ITEM)
+    addField("NCM",tbxNCM)
+    addField("Revisão do Item",tbxRV_ITEM)
+    addField("Unidade",tbxUNIDADE)
+    addField("Quantidade",tbxQUANT)
+    addField("Valor Unitário",tbxVALOR_UNIDADE)
+    addField("IPI",tbxIPI)
+    addField("ICMS",tbxICMS)
+	addField("Entrega",tbxENTREGA)
+	addFieldMultLine("Desrição",tbxDESCRICAO)
+    addField("Arquivo",tbxArquivo)
+	addFieldImage("Foto",tbxFOTO)        
+
+    addButtonDefault("Save",save)
+    addButton("Back", back)
+
+[trigger:back]
+    goBack()
+
+[trigger:getItem]
+    if existParam('id')
+    	getByKey(item, query.id, updateScreen)
+	else
+		setTextLabelValue(tbxNUM_PROPOSTA,query.num_proposta)
+		setTextLabelValue(tbxRV_PROPOSTA, query.rv_proposta)
+    endif
+
+[trigger:updateScreen{data}]
+    setTextLabelValue(tbxNUM_PROPOSTA,data.num_proposta)
+	setTextLabelValue(tbxRV_PROPOSTA, data.rv_proposta)
+    setText(tbxCOD_ITEM,data.cod_item)
+    setText(tbxNCM,data.ncm)
+    setText(tbxRV_ITEM,data.rv_item)
+    setText(tbxUNIDADE,data.unidade)
+    setText(tbxQUANT,data.quant)
+    setText(tbxVALOR_UNIDADE,data.unidade)
+    setText(tbxIPI,data.ipi)
+    setText(tbxICMS,data.icms)
+    setText(tbxENTREGA,data.entrega)
+	setText(tbxDESCRICAO,data.descricao)
+	setContentFieldImage(tbxFOTO,data.foto)
+
+[trigger:save]
+    obj <- json(
+	    num_proposta:getTextLabelValue(tbxNUM_PROPOSTA),
+	    rv_proposta:getTextLabelValue(tbxRV_PROPOSTA),	
+        cod_item:getText(tbxCOD_ITEM),
+        ncm:getText(tbxNCM),
+        rv_item:getText(tbxRV_ITEM),
+        unidade:getText(tbxUNIDADE),
+        quant:getText(tbxQUANT),
+        valor_unidade:getText(tbxVALOR_UNIDADE),
+        ipi:getText(tbxIPI),
+        icms:getText(tbxICMS),
+        entrega:getText(tbxENTREGA),
+        descricao:getText(tbxDESCRICAO),
+	    fotobase64:getContentFieldImage(tbxFOTO))
+    if existParam('id')
+    	updateByKey(item, query.id, obj, back)
+    else
+    	insert(item, obj, back)
+    endif

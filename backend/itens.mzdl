@@ -1,0 +1,41 @@
+[DISABLE:Security]
+
+[get:/item/{NUM_PROPOSTA}/{RV_PROPOSTA}]
+    success(repository.PFPMZ_ITENS.ListByRevisao(NUM_PROPOSTA,RV_PROPOSTA))
+
+[get:/item/{ID}]
+    obj <- repository.PFPMZ_ITENS.GetByKey(ID)
+    assertNull(obj,"Item não existe")
+    success(obj)
+
+[post:/item]
+    checkBodyFields(NUM_PROPOSTA,RV_PROPOSTA,COD_ITEM,DESCRICAO,UNIDADE,QUANT,VALOR_UNIDADE,IPI,ICMS,ENTREGA,ARQUIVO,FOTOBase64,RV_ITEM,NCM)
+    assertBodyFieldsNotEmptyEx([NUM_PROPOSTA,RV_PROPOSTA, COD_ITEM, DESCRICAO], "campo %field% é obrigatório")
+
+    proposta <- repository.PFPMZ_PROPOSTA.GetByKey(body.NUM_PROPOSTA)
+    assertNull(proposta, "Proposta {body.NUM_PROPOSTA} não encontrada!")
+ 
+    revisao <- repository.PFPMZ_PROPOSTA_RV.GetByRevision(body.NUM_PROPOSTA, body.RV_PROPOSTA)
+    assertNull(revisao, "Revisao {body.NUM_PROPOSTA}-{body.RV_PROPOSTA} não encontrada!")
+
+    obj <- repository.PFPMZ_ITENS.Insert(data(body.NUM_PROPOSTA,body.body.RV_PROPOSTA,body.COD_ITEM,body.DESCRICAO,body.UNIDADE,body.QUANT,body.VALOR_UNIDADE,body.IPI,body.ICMS,body.ENTREGA,body.ARQUIVO,body.FOTOBase64,body.RV_ITEM,body.NCM))
+    success("Item {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA}-{obj.COD_ITEM} Inserido com sucesso!")
+
+[put:/item/{ID}]
+    checkBodyFields(NUM_PROPOSTA,RV_PROPOSTA,COD_ITEM,DESCRICAO,UNIDADE,QUANT,VALOR_UNIDADE,IPI,ICMS,ENTREGA,ARQUIVO,FOTOBase64,RV_ITEM,NCM)
+    assertBodyFieldsNotEmptyEx([NUM_PROPOSTA,RV_PROPOSTA], "campo %field% é obrigatório")
+
+    proposta <- repository.PFPMZ_PROPOSTA.GetByKey(body.NUM_PROPOSTA)
+    assertNull(proposta, "Proposta {body.NUM_PROPOSTA} não encontrada!")
+ 
+    revisao <- repository.PFPMZ_PROPOSTA_RV.GetByRevision(body.NUM_PROPOSTA, body.RV_PROPOSTA)
+    assertNull(revisao, "Revisao {body.NUM_PROPOSTA}-{body.RV_PROPOSTA} não encontrada!")
+
+    resp <- repository.PFPMZ_ITENS.Update(data(ID,body.NUM_PROPOSTA,body.body.RV_PROPOSTA,body.COD_ITEM,body.DESCRICAO,body.UNIDADE,body.QUANT,body.VALOR_UNIDADE,body.IPI,body.ICMS,body.ENTREGA,body.ARQUIVO,body.FOTOBase64,body.RV_ITEM,body.NCM))
+    assert(resp==false,"Item não existe")
+    success("Item {body.NUM_PROPOSTA}-{body.RV_PROPOSTA}-{body.COD_ITEM} atualizado com sucesso!")
+
+[delete:/item/{ID}]
+    obj <- repository.PFPMZ_ITENS.Delete(ID)
+    assertNull(obj,"Item não existe")
+    success(obj)

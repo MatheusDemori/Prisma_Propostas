@@ -1,0 +1,6 @@
+[header:]
+    constant(___TITULO___,'Sistema de propsota de Peças e Serviços')
+    constant(___DESCRICAO___,'Sistema para proposta')
+    constant(___NOME___,'Sistema de Proposta')
+[fullscreen:]
+   addTitle('Sistema de Propostas - 1.0')

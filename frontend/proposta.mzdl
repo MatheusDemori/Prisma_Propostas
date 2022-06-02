@@ -1,11 +1,4 @@
-[header:]
-    constant(___TITULO___,'Sistema de propsota de Peças e Serviços')
-    constant(___DESCRICAO___,'Sistema para proposta')
-    constant(___NOME___,'Sistema de Proposta')
-[dialog:]
-   addTitle('Sistema de Propostas - 1.0')
-
-
+<component.dialog>
 
 [content:Contact]
     trigger(getProposta)

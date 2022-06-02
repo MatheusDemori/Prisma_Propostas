@@ -1,0 +1,41 @@
+[DISABLE:Security]
+
+[get:/proposta/{NUM_PROPOSTA}/historico]
+    success(repository.PFPMZ_HISTORICO.ListByProposal(NUM_PROPOSTA))
+
+[get:/historico/{ID}]
+    obj <- repository.PFPMZ_HISTORICO.GetByKey(ID)
+    assertNull(obj,"Historico não existe")
+    success(obj)
+
+[post:/historico]
+    checkBodyFields(NUM_PROPOSTA, RV_PROPOSTA, MOTIVO, DATA_CONTATO, DATA_ENCERRAMENTO, OBS,INDICE)
+    assertBodyFieldsNotEmptyEx([NUM_PROPOSTA,RV_PROPOSTA, MOTIVO], "campo %field% é obrigatório")
+
+    proposta <- repository.PFPMZ_PROPOSTA.GetByKey(body.NUM_PROPOSTA)
+    assertNull(proposta, "Proposta {body.NUM_PROPOSTA} não encontrada!")
+ 
+    revisao <- repository.PFPMZ_PROPOSTA_RV.GetByRevision(body.NUM_PROPOSTA, body.RV_PROPOSTA)
+    assertNull(revisao, "Revisao {body.NUM_PROPOSTA}-{body.RV_PROPOSTA} não encontrada!")
+
+    obj <- repository.PFPMZ_HISTORICO.Insert(data(body.NUM_PROPOSTA,body.RV_PROPOSTA,body.MOTIVO,body.DATA_CONTATO,body.DATA_ENCERRAMENTO,body.OBS,body.INDICE))
+    success("historico {body.NUM_PROPOSTA}-{body.RV_PROPOSTA} Inserido com sucesso!")
+
+[put:/historico/{ID}]
+    checkBodyFields(NUM_PROPOSTA, RV_PROPOSTA, MOTIVO, DATA_CONTATO, DATA_ENCERRAMENTO, OBS,INDICE)
+    assertBodyFieldsNotEmptyEx([NUM_PROPOSTA,RV_PROPOSTA, MOTIVO], "campo %field% é obrigatório")
+
+    proposta <- repository.PFPMZ_PROPOSTA.GetByKey(body.NUM_PROPOSTA)
+    assertNull(proposta, "Proposta {body.NUM_PROPOSTA} não encontrada!")
+ 
+    revisao <- repository.PFPMZ_PROPOSTA_RV.GetByRevision(body.NUM_PROPOSTA, body.RV_PROPOSTA)
+    assertNull(revisao, "Revisao {body.NUM_PROPOSTA}-{body.RV_PROPOSTA} não encontrada!")
+
+    resp <- repository.PFPMZ_HISTORICO.Update(data(ID,body.NUM_PROPOSTA,body.RV_PROPOSTA,body.MOTIVO,body.DATA_CONTATO,body.DATA_ENCERRAMENTO,body.OBS,body.INDICE))
+    assert(resp==false,"Historico não existe")
+    success("Historico {body.NUM_PROPOSTA}-{body.RV_PROPOSTA} atualizado com sucesso!")
+
+[delete:/historico/{ID}]
+    obj <- repository.PFPMZ_HISTORICO.Delete(ID)
+    assertNull(obj,"Historico não existe")
+    success(obj)

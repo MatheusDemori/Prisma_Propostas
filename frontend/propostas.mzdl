@@ -1,0 +1,36 @@
+<component.fullscreen>
+
+[content:Lista--de--Propostas]
+    startBlock HeaderTable
+        addFilterField("Filtrar", Filter, filterData)
+        addButtonDefault("Nova Proposta",novaProposta)
+    endBlock
+    addViewCollection(vcnProposta, Fields(COD_CLIENTE,TIPO_CLIENTE,EMPRESA,CONTATO,RESPONSAVEL,PEDIDO,TAB_PRECO,STATUS,REPRESENTANTE,MOTIVO), Operations(reviews,history,remove,edit))
+    trigger(init)
+
+[trigger:init]
+    getAll(proposta, newData)
+
+[trigger:newData{data}]
+    updateViewCollection(vcnProposta,data)
+    filter <- getTextFromFilterField(Filter)
+    filterViewCollection(vcnProposta, filter)
+
+[trigger:filterData]
+    filter <- getTextFromFilterField(Filter)
+    filterViewCollection(vcnProposta, filter)
+
+[trigger:novaProposta]
+    navigateTo(proposta)
+
+[trigger:edit{obj}]
+    navigateToExt(proposta,navigateParams(id:obj.num_proposta))
+
+[trigger:remove{obj}]
+    delete(proposta, obj.num_proposta, init)
+
+[trigger:reviews{obj}]
+    navigateToExt(revisoes,navigateParams(num_proposta:obj.num_proposta))
+
+[trigger:history{obj}]
+    navigateToExt(historicos,navigateParams(num_proposta:obj.num_proposta))

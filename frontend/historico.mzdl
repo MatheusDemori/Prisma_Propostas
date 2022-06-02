@@ -1,0 +1,50 @@
+<component.dialog>
+
+[content:Historico]
+    trigger(getHistorico)
+
+    addLabel("Número da Proposta",tbxNUM_PROPOSTA,0)
+    addLabel("Revisao da Proposta",tbxRV_PROPOSTA,0)
+    addField("Motivo",tbxMOTIVO)
+    addFieldDateTime("Data Contato",tbxDATA_CONTATO)
+    addFieldDateTime("Data Encerramento",tbxDATA_ENCERRAMENTO)
+    addFieldMultLine("OBS",tbxOBS)
+    addFieldMultLine("Indice",tbxINDICE)
+        
+    addButtonDefault("Save",save)
+    addButton("Back", back)
+
+[trigger:back]
+    goBack()
+
+[trigger:getHistorico]
+    if existParam('id')
+    	getByKey(historico, query.id, updateScreen)
+	else
+		setTextLabelValue(tbxNUM_PROPOSTA,query.num_proposta)
+		setTextLabelValue(tbxRV_PROPOSTA, query.rv_proposta)
+    endif
+
+[trigger:updateScreen{data}]
+    setTextLabelValue(tbxNUM_PROPOSTA,data.num_proposta)
+	setTextLabelValue(tbxRV_PROPOSTA, data.rv_proposta)
+    setText(tbxMOTIVO,data.motivo)
+	setDateTimeValue(tbxDATA_CONTATO,data.data_contato)
+	setDateTimeValue(tbxDATA_ENCERRAMENTO,data.data_encerramento)
+	setText(tbxOBS,data.obs)
+	setText(tbxINDICE,data.indice)
+
+[trigger:save]
+    obj <- json(
+	    num_proposta:getTextLabelValue(tbxNUM_PROPOSTA),
+	    rv_proposta:getTextLabelValue(tbxRV_PROPOSTA),
+        motivo:getText(tbxCOD_CLIENTE),
+        data_contato:getDateTimeValue(tbxDATA_CONTATO),
+        data_encerramento:getDateTimeValue(tbxDATA_ENCERRAMENTO),
+        obs:getText(tbxOBS),
+	    indice:getText(tbxINDICE))
+    if existParam('id')
+    	updateByKey(proposta, query.id, obj, back)
+    else
+    	insert(proposta, obj, back)
+    endif

@@ -1,0 +1,37 @@
+<component.fullscreen>
+
+[content:Revisões]
+    startBlock HeaderTable
+        addFilterField("Filtrar", Filter, filterData)
+        addButtonDefault("Nova Revisao",novaRevisao)
+    endBlock
+    addViewCollection(vcnRevisao, Fields(NUM_PROPOSTA,RV_PROPOSTA,VALIDADE,PAGAMENTO,ICMS,FRETE,VALOR_FRETE,DATA_SOLICITACAO), Operations(itens,remove,edit))
+    trigger(init)
+
+[trigger:init]
+    if existParam('num_proposta')
+        getEx(proposta, params(query.num_proposta, "revisoes"), newData)
+    endif
+
+
+
+[trigger:newData{data}]
+    updateViewCollection(vcnRevisao,data)
+    filter <- getTextFromFilterField(Filter)
+    filterViewCollection(vcnRevisao, filter)
+
+[trigger:filterData]
+    filter <- getTextFromFilterField(Filter)
+    filterViewCollection(vcnRevisao, filter)
+
+[trigger:novaRevisao]
+    navigateToExt(revisao,navigateParams(num_proposta:query.num_proposta))
+
+[trigger:edit{obj}]
+    navigateToExt(revisao,navigateParams(id:obj.id))
+
+[trigger:remove{obj}]
+    delete(revisao, obj.id, init)
+
+[trigger:itens{obj}]
+    navigateToExt(itens,navigateParams(num_proposta:obj.num_proposta,rv_proposta:obj.rv_proposta))
