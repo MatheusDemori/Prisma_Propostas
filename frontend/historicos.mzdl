@@ -5,18 +5,16 @@
         addFilterField("Filtrar", Filter, filterData)
         addButtonDefault("Novo Historico",novoHistorico)
     endBlock
-    addViewCollection(vcnHistorico, Fields(NUM_PROPOSTA, RV_PROPOSTA,MOTIVO,DATA_CONTATO,DATA_ENCERRAMENTO), Operations(remove,edit))
+    addViewCollection(vcnHistorico, Fields(NUM_PROPOSTA, RV_PROPOSTA, MOTIVO, DATA_CONTATO, DATA_ENCERRAMENTO), Operations(remove,edit))
     trigger(init)
 
 [trigger:init]
     if existParam('num_proposta')
-        getEx(proposta, params(query.num_proposta, "historico"), newData)
+        data <- services.Historico.List(query.num_proposta)
+        updateViewCollection(vcnHistorico,data)
+        filter <- getTextFromFilterField(Filter)
+        filterViewCollection(vcnHistorico, filter)
     endif
-
-[trigger:newData{data}]
-    updateViewCollection(vcnHistorico,data)
-    filter <- getTextFromFilterField(Filter)
-    filterViewCollection(vcnHistorico, filter)
 
 [trigger:filterData]
     filter <- getTextFromFilterField(Filter)
@@ -29,4 +27,8 @@
     navigateToExt(historico,navigateParams(id:obj.id))
 
 [trigger:remove{obj}]
-    delete(historico, obj.id, init)
+    resp <- showMessage("Delete","Tem certeza que deseja remover este histórico?",["Sim","Não"])
+    if resp=="Sim"
+        service.Historico.Delete(obj.id)
+        trigger(init)
+    endif

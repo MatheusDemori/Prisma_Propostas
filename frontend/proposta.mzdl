@@ -39,11 +39,10 @@
 
 
 [trigger:getProposta]
-    if existParam('id')
-    	getByKey(proposta, query.id, updateScreen)
+    if existParam('num_proposta')
+	    data <- service.Proposta.Get(query.num_proposta)	
+		trigger(updateScreen,args(data))
     endif
-
-
 
 [trigger:updateScreen{data}]
     setTextLabelValue(tbxNUM_PROPOSTA,data.num_proposta)
@@ -92,8 +91,10 @@
     cod_representante:getText(tbxCOD_REPRESENTANTE),
     representante:getText(tbxREPRESENTANTE),
 	motivo:getText(tbxMOTIVO))
-    if existParam('id')
-    	updateByKey(proposta, query.id, obj, back)
+    if existParam('num_proposta')
+    	service.Proposta.Update(query.num_proposta, obj)
     else
-    	insert(proposta, obj, back)
+    	service.Proposta.Insert(obj)
     endif
+	trigger(back);
+	

@@ -9,9 +9,7 @@
     trigger(init)
 
 [trigger:init]
-    getAll(proposta, newData)
-
-[trigger:newData{data}]
+    data <- services.proposta.list()
     updateViewCollection(vcnProposta,data)
     filter <- getTextFromFilterField(Filter)
     filterViewCollection(vcnProposta, filter)
@@ -27,7 +25,11 @@
     navigateToExt(proposta,navigateParams(id:obj.num_proposta))
 
 [trigger:remove{obj}]
-    delete(proposta, obj.num_proposta, init)
+    resp <- showMessage("Delete","Tem certeza que deseja remover essa proposta {obj.num_proposta}?",["Sim","Não"])
+    if resp=="Sim"
+        service.Proposta.Delete(obj.num_proposta)
+        trigger(init)
+    endif
 
 [trigger:reviews{obj}]
     navigateToExt(revisoes,navigateParams(num_proposta:obj.num_proposta))

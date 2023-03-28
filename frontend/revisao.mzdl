@@ -20,7 +20,8 @@
 
 [trigger:getRevisao]
     if existParam('id')
-    	getByKey(revisao, query.id, updateScreen)
+    	data <- service.Revisao.Get(query.id)
+        trigger(updateScreen,args(data))
 	else
 		setTextLabelValue(tbxNUM_PROPOSTA,query.num_proposta)
     endif
@@ -46,7 +47,8 @@
         valor_frete:getDateTimeValue(tbxVALOR_FRETE),
         data_solicitacao:getDateTimeValue(tbxDATA_SOLICITACAO))
     if existParam('id')
-    	updateByKey(revisao, query.id, obj, back)
+    	service.Revisao.Update(query.id, obj)
     else
-    	insert(revisao, obj, back)
+    	service.Revisao.Insert(obj)
     endif
+    trigger(back)

@@ -10,12 +10,10 @@
 
 [trigger:init]
     if existParam('num_proposta') && existParam('rv_proposta')
-        getEx(item, params(query.num_proposta, query.rv_proposta), newData)
+        data <- services.Itens.List(query.num_proposta, query.rv_proposta)
     else
-        getAll(iten, newData)    
+        data <- services.Itens.ListAll()    
     endif
-
-[trigger:newData{data}]
     updateViewCollection(vcnItem,data)
     filter <- getTextFromFilterField(Filter)
     filterViewCollection(vcnItem, filter)
@@ -31,4 +29,8 @@
     navigateToExt(item,navigateParams(id:obj.id))
 
 [trigger:remove{obj}]
-    delete(item, obj.id, init)
+    resp <- showMessage("Delete","Tem certeza que deseja remover este item?",["Sim","Não"])
+    if resp=="Sim"
+        service.Itens.Delete(obj.id)
+        trigger(init)
+    endif

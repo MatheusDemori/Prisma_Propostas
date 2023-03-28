@@ -10,15 +10,11 @@
 
 [trigger:init]
     if existParam('num_proposta')
-        getEx(proposta, params(query.num_proposta, "revisoes"), newData)
+        data <- services.Revisao.List(query.num_proposta)
+        updateViewCollection(vcnRevisao,data)
+        filter <- getTextFromFilterField(Filter)
+        filterViewCollection(vcnRevisao, filter)
     endif
-
-
-
-[trigger:newData{data}]
-    updateViewCollection(vcnRevisao,data)
-    filter <- getTextFromFilterField(Filter)
-    filterViewCollection(vcnRevisao, filter)
 
 [trigger:filterData]
     filter <- getTextFromFilterField(Filter)
@@ -31,7 +27,11 @@
     navigateToExt(revisao,navigateParams(id:obj.id))
 
 [trigger:remove{obj}]
-    delete(revisao, obj.id, init)
+    resp <- showMessage("Delete","Tem certeza que deseja remover esta revisão?",["Sim","Não"])
+    if resp=="Sim"
+        service.Revisao.Delete(obj.id)
+        trigger(init)
+    endif
 
 [trigger:itens{obj}]
     navigateToExt(itens,navigateParams(num_proposta:obj.num_proposta,rv_proposta:obj.rv_proposta))

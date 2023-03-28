@@ -19,7 +19,8 @@
 
 [trigger:getHistorico]
     if existParam('id')
-    	getByKey(historico, query.id, updateScreen)
+    	data <- service.Historico.Get(query.id)
+        trigger(updateScreen,args(data))
 	else
 		setTextLabelValue(tbxNUM_PROPOSTA,query.num_proposta)
 		setTextLabelValue(tbxRV_PROPOSTA, query.rv_proposta)
@@ -44,7 +45,8 @@
         obs:getText(tbxOBS),
 	    indice:getText(tbxINDICE))
     if existParam('id')
-    	updateByKey(proposta, query.id, obj, back)
+    	service.Historico.Update(query.id, obj)
     else
-    	insert(proposta, obj, back)
+    	service.Historico.Insert(obj)
     endif
+    trigger(back)

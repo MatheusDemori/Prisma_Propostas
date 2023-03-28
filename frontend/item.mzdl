@@ -26,7 +26,8 @@
 
 [trigger:getItem]
     if existParam('id')
-    	getByKey(item, query.id, updateScreen)
+    	data <- service.Item.Get(query.id)
+        trigger(updateScreen,args(data))
 	else
 		setTextLabelValue(tbxNUM_PROPOSTA,query.num_proposta)
 		setTextLabelValue(tbxRV_PROPOSTA, query.rv_proposta)
@@ -63,7 +64,8 @@
         descricao:getText(tbxDESCRICAO),
 	    fotobase64:getContentFieldImage(tbxFOTO))
     if existParam('id')
-    	updateByKey(item, query.id, obj, back)
+    	service.Item.Update(query.id, obj)
     else
-    	insert(item, obj, back)
+    	service.Item.Insert(obj)
     endif
+    trigger(back)
