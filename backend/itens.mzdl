@@ -1,19 +1,19 @@
 [DISABLE:Security]
 
-[enumeration:List{NUM_PROPOSTA}{RV_PROPOSTA}]
+[enumeration:List/{NUM_PROPOSTA}{RV_PROPOSTA}]
     success(repository.PFPMZ_ITENS.ListByRevisao(NUM_PROPOSTA,RV_PROPOSTA))
 
 [enumeration:ListAll]
     success(repository.PFPMZ_ITENS.List())
 
-[object:get{ID}]
+[object:get/{ID}]
     obj <- repository.PFPMZ_ITENS.GetByKey(ID)
     assertNotNull(obj,"Item não existe")
     success(obj)
 
-[msg:insert{obj}]
+[msg:insert/{obj}]
     checkFields(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.COD_ITEM,obj.DESCRICAO,obj.UNIDADE,obj.QUANT,obj.VALOR_UNIDADE,obj.IPI,obj.ICMS,obj.ENTREGA,obj.ARQUIVO,obj.FOTOBase64,obj.RV_ITEM,obj.NCM)
-    assertFieldsNotEmpty([obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.COD_ITEM, obj.DESCRICAO], "campo %field% é obrigatório")
+    assertFieldsNotEmpty(obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.COD_ITEM, obj.DESCRICAO)
 
     proposta <- repository.PFPMZ_PROPOSTA.GetByKey(obj.NUM_PROPOSTA)
     assertNotNull(proposta, "Proposta {obj.NUM_PROPOSTA} não encontrada!")
@@ -21,12 +21,12 @@
     revisao <- repository.PFPMZ_PROPOSTA_RV.GetByRevision(obj.NUM_PROPOSTA, obj.RV_PROPOSTA)
     assertNotNull(revisao, "Revisao {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} não encontrada!")
 
-    obj <- repository.PFPMZ_ITENS.Insert(data(obj.NUM_PROPOSTA,obj.obj.RV_PROPOSTA,obj.COD_ITEM,obj.DESCRICAO,obj.UNIDADE,obj.QUANT,obj.VALOR_UNIDADE,obj.IPI,obj.ICMS,obj.ENTREGA,obj.ARQUIVO,obj.FOTOBase64,obj.RV_ITEM,obj.NCM))
+    resp <- repository.PFPMZ_ITENS.Insert(data(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.COD_ITEM,obj.DESCRICAO,obj.UNIDADE,obj.QUANT,obj.VALOR_UNIDADE,obj.IPI,obj.ICMS,obj.ENTREGA,obj.ARQUIVO,obj.FOTOBase64,obj.RV_ITEM,obj.NCM))
     success("Item {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA}-{obj.COD_ITEM} Inserido com sucesso!")
 
-[msg:update{ID}{obj}]
+[msg:update/{ID}{obj}]
     checkFields(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.COD_ITEM,obj.DESCRICAO,obj.UNIDADE,obj.QUANT,obj.VALOR_UNIDADE,obj.IPI,obj.ICMS,obj.ENTREGA,obj.ARQUIVO,obj.FOTOBase64,obj.RV_ITEM,obj.NCM)
-    assertFieldsNotEmpty([obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.COD_ITEM, obj.DESCRICAO], "campo %field% é obrigatório")
+    assertFieldsNotEmpty(obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.COD_ITEM, obj.DESCRICAO)
 
     proposta <- repository.PFPMZ_PROPOSTA.GetByKey(obj.NUM_PROPOSTA)
     assertNotNull(proposta, "Proposta {obj.NUM_PROPOSTA} não encontrada!")
@@ -34,11 +34,11 @@
     revisao <- repository.PFPMZ_PROPOSTA_RV.GetByRevision(obj.NUM_PROPOSTA, obj.RV_PROPOSTA)
     assertNotNull(revisao, "Revisao {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} não encontrada!")
 
-    resp <- repository.PFPMZ_ITENS.Update(data(ID,obj.NUM_PROPOSTA,obj.obj.RV_PROPOSTA,obj.COD_ITEM,obj.DESCRICAO,obj.UNIDADE,obj.QUANT,obj.VALOR_UNIDADE,obj.IPI,obj.ICMS,obj.ENTREGA,obj.ARQUIVO,obj.FOTOBase64,obj.RV_ITEM,obj.NCM))
+    resp <- repository.PFPMZ_ITENS.Update(data(ID,obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.COD_ITEM,obj.DESCRICAO,obj.UNIDADE,obj.QUANT,obj.VALOR_UNIDADE,obj.IPI,obj.ICMS,obj.ENTREGA,obj.ARQUIVO,obj.FOTOBase64,obj.RV_ITEM,obj.NCM))
     assertTrue(resp,"Item não existe")
     success("Item {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA}-{obj.COD_ITEM} atualizado com sucesso!")
 
-[msg:delete{ID}]
+[msg:delete/{ID}]
     obj <- repository.PFPMZ_ITENS.Delete(ID)
     assertNotNull(obj,"Item não existe")
-    success(obj)
+    success("Item {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA}-{obj.COD_ITEM} removido com sucesso!")

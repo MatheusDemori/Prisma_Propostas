@@ -1,16 +1,16 @@
 [DISABLE:Security]
 
-[enumerate:list{NUM_PROPOSTA}]
+[enumerate:list/{NUM_PROPOSTA}]
     success(repository.PFPMZ_HISTORICO.ListByProposal(NUM_PROPOSTA))
 
-[object:get{ID}]
+[object:get/{ID}]
     obj <- repository.PFPMZ_HISTORICO.GetByKey(ID)
     assertNotNull(obj,"Historico não existe")
     success(obj)
 
-[msg:/insert{obj}]
+[msg:insert/{obj}]
     checkFields(obj.NUM_PROPOSTA, obj.RV_PROPOSTA, obj.MOTIVO, obj.DATA_CONTATO, obj.DATA_ENCERRAMENTO, obj.OBS,INDICE)
-    assertFieldsNotEmpty([obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.MOTIVO], "campo %field% é obrigatório")
+    assertFieldsNotEmpty(obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.MOTIVO)
 
     proposta <- repository.PFPMZ_PROPOSTA.GetByKey(obj.NUM_PROPOSTA)
     assertNotNull(proposta, "Proposta {obj.NUM_PROPOSTA} não encontrada!")
@@ -18,12 +18,12 @@
     revisao <- repository.PFPMZ_PROPOSTA_RV.GetByRevision(obj.NUM_PROPOSTA, obj.RV_PROPOSTA)
     assertNotNull(revisao, "Revisao {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} não encontrada!")
 
-    obj <- repository.PFPMZ_HISTORICO.Insert(data(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.MOTIVO,obj.DATA_CONTATO,obj.DATA_ENCERRAMENTO,obj.OBS,obj.INDICE))
+    resp <- repository.PFPMZ_HISTORICO.Insert(data(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.MOTIVO,obj.DATA_CONTATO,obj.DATA_ENCERRAMENTO,obj.OBS,obj.INDICE))
     success("historico {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} Inserido com sucesso!")
 
-[msg:update{ID}{obj}]
+[msg:update/{ID}{obj}]
     checkFields(obj.NUM_PROPOSTA, obj.RV_PROPOSTA, obj.MOTIVO, obj.DATA_CONTATO, obj.DATA_ENCERRAMENTO, obj.OBS,INDICE)
-    assertFieldsNotEmpty([obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.MOTIVO], "campo %field% é obrigatório")
+    assertFieldsNotEmpty(obj.NUM_PROPOSTA,obj.RV_PROPOSTA, obj.MOTIVO)
 
     proposta <- repository.PFPMZ_PROPOSTA.GetByKey(obj.NUM_PROPOSTA)
     assertNotNull(proposta, "Proposta {obj.NUM_PROPOSTA} não encontrada!")
@@ -35,7 +35,7 @@
     assertTrue(resp,"Historico não existe")
     success("Historico {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} atualizado com sucesso!")
 
-[msg:delete{ID}]
+[msg:delete/{ID}]
     obj <- repository.PFPMZ_HISTORICO.Delete(ID)
     assertNotNull(obj,"Historico não existe")
-    success(obj)
+    success("Historico {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} removido com sucesso!")

@@ -2,10 +2,10 @@
     "project":"Sistema de Proposta",
     "version":"1.0",
     "author":"Matheus / Mozar",
-    "outputRootPath":"../src",
+    "outputRootPath":"../src2.0",
     "inputGit":"",
     "outputGit":"",
-    "profile":"fullstack:html5.0-dotnet5.0-sqlite3.0:1.0",
+    "profile":"fullstack:html5.0-dotnet5.0-sqlite3.0:2.0",
     "constants":{
         "DATA_BASE_TECHONOLOGY":"SQLITE",
         "NAME_SPACE":"Propostas",

@@ -3,25 +3,25 @@
 [enumerate:list]
     success(repository.PFPMZ_PROPOSTA.List())
 
-[object:get{NUM_PROPOSTA}]
+[object:get/{NUM_PROPOSTA}]
     proposta <- repository.PFPMZ_PROPOSTA.GetByKey(NUM_PROPOSTA)
     assertNotNull(proposta,"Proposta não existe")
     success(proposta)
 
-[msg:insert{obj}]
+[msg:insert/{obj}]
     checkFields(obj.COD_CLIENTE, obj.TIPO_CLIENTE, obj.EMPRESA, obj.CONTATO, obj.ENDERECO, obj.BAIRRO, obj.CIDADE, obj.UF, obj.CEP, obj.E_MAIL, obj.TEL, obj.RESPONSAVEL, obj.OBS, obj.PEDIDO, obj.TAB_PRECO, obj.DESC_MAX, obj.STATUS, obj.OBS_INTERNA, obj.COD_REPRESENTANTE, obj.REPRESENTANTE, obj.MOTIVO)
     assertFieldsNotEmpty(obj.EMPRESA,obj.CONTATO, obj.E_MAIL, obj.TEL)
-    proposta <- repository.PFPMZ_PROPOSTA.Insert(data(obj.COD_CLIENTE,obj.TIPO_CLIENTE,obj.EMPRESA,obj.CONTATO,obj.ENDERECO,obj.BAIRRO,obj.CIDADE,obj.UF,obj.CEP,obj.E_MAIL,obj.TEL,obj.RESPONSAVEL,obj.OBS,obj.PEDIDO,obj.TAB_PRECO,obj.DESC_MAX,obj.STATUS,obj.OBS_INTERNA,obj.COD_REPRESENTANTE,obj.REPRESENTANTE,obj.MOTIVO))
-    success("proposta {proposta.NUM_PROPOSTA} Inserida com sucesso!")
+    resp <- repository.PFPMZ_PROPOSTA.Insert(data(obj.COD_CLIENTE,obj.TIPO_CLIENTE,obj.EMPRESA,obj.CONTATO,obj.ENDERECO,obj.BAIRRO,obj.CIDADE,obj.UF,obj.CEP,obj.E_MAIL,obj.TEL,obj.RESPONSAVEL,obj.OBS,obj.PEDIDO,obj.TAB_PRECO,obj.DESC_MAX,obj.STATUS,obj.OBS_INTERNA,obj.COD_REPRESENTANTE,obj.REPRESENTANTE,obj.MOTIVO))
+    success("proposta {resp.NUM_PROPOSTA} Inserida com sucesso!")
 
-[msg:update{NUM_PROPOSTA}{obj}]
+[msg:update/{NUM_PROPOSTA}{obj}]
     checkFields(obj.COD_CLIENTE, obj.TIPO_CLIENTE, obj.EMPRESA, obj.CONTATO, obj.ENDERECO, obj.BAIRRO, obj.CIDADE, obj.UF, obj.CEP, obj.E_MAIL, obj.TEL, obj.RESPONSAVEL, obj.OBS, obj.PEDIDO, obj.TAB_PRECO, obj.DESC_MAX, obj.STATUS, obj.OBS_INTERNA, obj.COD_REPRESENTANTE, obj.REPRESENTANTE, obj.MOTIVO)
     assertFieldsNotEmpty(obj.EMPRESA,obj.CONTATO, obj.E_MAIL, obj.TEL)
     resp <- repository.PFPMZ_PROPOSTA.Update(data(NUM_PROPOSTA,obj.COD_CLIENTE,obj.TIPO_CLIENTE,obj.EMPRESA,obj.CONTATO,obj.ENDERECO,obj.BAIRRO,obj.CIDADE,obj.UF,obj.CEP,obj.E_MAIL,obj.TEL,obj.RESPONSAVEL,obj.OBS,obj.PEDIDO,obj.TAB_PRECO,obj.DESC_MAX,obj.STATUS,obj.OBS_INTERNA,obj.COD_REPRESENTANTE,obj.REPRESENTANTE,obj.MOTIVO))
     assertTrue(resp,"Proposta não existe")
     success("proposta {NUM_PROPOSTA} atualizada com sucesso!")
 
-[msg:delete{NUM_PROPOSTA}]
+[msg:delete/{NUM_PROPOSTA}]
     proposta <- repository.PFPMZ_PROPOSTA.Delete(NUM_PROPOSTA)
     assertNotNull(proposta,"Proposta não existe")
-    success(proposta)
+    success("proposta {NUM_PROPOSTA} removida com sucesso!")

@@ -1,26 +1,26 @@
 [DISABLE:Security]
 
-[get:list{NUM_PROPOSTA}]
+[get:list/{NUM_PROPOSTA}]
     success(repository.PFPMZ_PROPOSTA_RV.ListByProposal(NUM_PROPOSTA))
 
-[object:get{ID}]
+[object:get/{ID}]
     obj <- repository.PFPMZ_PROPOSTA_RV.GetByKey(ID)
     assertNotNull(obj,"Revisão não existe")
     success(obj)
 
-[msg:insert{obj}]
+[msg:insert/{obj}]
     checkFields(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.VALIDADE,obj.PAGAMENTO,obj.ICMS,obj.FRETE,obj.VALOR_FRETE,obj.DATA_SOLICITACAO)
-    assertFieldsNotEmpty([obj.NUM_PROPOSTA,obj.RV_PROPOSTA], "campo %field% é obrigatório")
+    assertFieldsNotEmpty(obj.NUM_PROPOSTA,obj.RV_PROPOSTA)
 
     proposta <- repository.PFPMZ_PROPOSTA.GetByKey(obj.NUM_PROPOSTA)
     assertNull(proposta, "Proposta {obj.NUM_PROPOSTA} não encontrada!")
 
-    obj <- repository.PFPMZ_PROPOSTA_RV.Insert(data(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.VALIDADE,obj.PAGAMENTO,obj.ICMS,obj.FRETE,obj.VALOR_FRETE,obj.DATA_SOLICITACAO))
+    resp <- repository.PFPMZ_PROPOSTA_RV.Insert(data(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.VALIDADE,obj.PAGAMENTO,obj.ICMS,obj.FRETE,obj.VALOR_FRETE,obj.DATA_SOLICITACAO))
     success("Revisão {obj.NUM_PROPOSTA}={obj.RV_PROPOSTA} Inserida com sucesso!")
 
-[msg:update{ID}{obj}]
+[msg:update/{ID}{obj}]
     checkFields(obj.NUM_PROPOSTA,obj.RV_PROPOSTA,obj.VALIDADE,obj.PAGAMENTO,obj.ICMS,obj.FRETE,obj.VALOR_FRETE,obj.DATA_SOLICITACAO)
-    assertFieldsNotEmpty([obj.NUM_PROPOSTA,obj.RV_PROPOSTA], "campo %field% é obrigatório")
+    assertFieldsNotEmpty(obj.NUM_PROPOSTA,obj.RV_PROPOSTA)
 
     proposta <- repository.PFPMZ_PROPOSTA.GetByKey(obj.NUM_PROPOSTA)
     assertNotNull(proposta, "Proposta {obj.NUM_PROPOSTA} não encontrada!")
@@ -29,7 +29,7 @@
     assertTrue(resp,"Revisão não existe")
     success("Revisão {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} atualizada com sucesso!")
 
-[msg:delete{ID}]
+[msg:delete/{ID}]
     obj <- repository.PFPMZ_PROPOSTA_RV.Delete(ID)
     assertNotNull(obj,"Revisão não existe")
-    success(obj)
+    success("Revisão {obj.NUM_PROPOSTA}-{obj.RV_PROPOSTA} removida com sucesso!")
